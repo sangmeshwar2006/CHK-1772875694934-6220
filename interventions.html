@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI — Interventions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+  <style>
+    .int-type-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+    .int-type-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+      transition: all 0.2s; cursor: default;
+    }
+    .int-type-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+    .int-type-icon { font-size: 28px; margin-bottom: 10px; }
+    .int-type-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .int-type-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+    .int-success { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
+    .int-success-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; }
+    .new-int-form { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; font-family: var(--font-mono); }
+    .form-select, .form-input {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 12px; font-family: var(--font-body); font-size: 13px; color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-select:focus, .form-input:focus { border-color: var(--cyan); }
+    .int-detail-row {
+      display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+      background: var(--surface2); border-radius: 10px; border: 1px solid var(--border);
+      margin-bottom: 8px; transition: all 0.2s;
+    }
+    .int-detail-row:hover { border-color: var(--border2); }
+    .int-num { font-family: var(--font-mono); font-size: 11px; color: var(--text3); min-width: 50px; }
+    .int-stu { font-size: 13px; font-weight: 600; color: var(--text); min-width: 130px; }
+    .int-typ { font-size: 12px; color: var(--text2); flex: 1; }
+    .int-date { font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
+    .int-out { font-family: var(--font-mono); font-size: 11px; color: var(--green-b); min-width: 90px; text-align: right; }
+  </style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⬡</div>
+    <div><div class="brand-name">EduAI</div><div class="brand-sub">Analytics v2.0</div></div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html"  class="nav-item"><span class="nav-icon">◈</span><span class="nav-text">Overview</span></a>
+    <a href="students.html" class="nav-item"><span class="nav-icon">◉</span><span class="nav-text">Students</span></a>
+    <a href="patterns.html" class="nav-item"><span class="nav-icon">◫</span><span class="nav-text">Learning Patterns</span></a>
+    <a href="predict.html"  class="nav-item"><span class="nav-icon">◬</span><span class="nav-text">Predictions</span></a>
+    <a href="interventions.html" class="nav-item active"><span class="nav-icon">◐</span><span class="nav-text">Interventions</span></a>
+    <a href="ai-chat.html"  class="nav-item"><span class="nav-icon">◑</span><span class="nav-text">AI Advisor</span></a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="ss-item"><span class="ss-num">247</span><span class="ss-label">Students</span></div>
+    <div class="ss-item"><span class="ss-num">94%</span><span class="ss-label">Accuracy</span></div>
+  </div>
+</aside>
+
+<main id="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Interventions</h1>
+      <span class="page-sub">Targeted educational support — AI-recommended and tracked</span>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span>8 Active</div>
+    </div>
+  </header>
+
+  <!-- KPIs -->
+  <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px;">
+    <div class="kpi-card" data-color="green"><div class="kpi-icon">✅</div><div class="kpi-body"><div class="kpi-val">89%</div><div class="kpi-label">Success Rate</div><div class="kpi-delta up">+3% this month</div></div></div>
+    <div class="kpi-card" data-color="blue"><div class="kpi-icon">📋</div><div class="kpi-body"><div class="kpi-val">8</div><div class="kpi-label">Active Plans</div><div class="kpi-delta up">2 new today</div></div></div>
+    <div class="kpi-card" data-color="cyan"><div class="kpi-icon">🎯</div><div class="kpi-body"><div class="kpi-val">+14%</div><div class="kpi-label">Avg Improvement</div><div class="kpi-delta up">Post-intervention</div></div></div>
+    <div class="kpi-card" data-color="amber"><div class="kpi-icon">⏳</div><div class="kpi-body"><div class="kpi-val">3</div><div class="kpi-label">Pending Review</div><div class="kpi-delta down">Schedule needed</div></div></div>
+  </div>
+
+  <!-- Intervention type cards -->
+  <div class="section-title">Intervention Catalog</div>
+  <div class="int-type-cards" id="intTypesGrid"></div>
+
+  <!-- Add new intervention -->
+  <div class="full-card" style="margin-bottom:20px;">
+    <div style="font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">+ Create New Intervention</div>
+    <div class="new-int-form">
+      <div class="form-group">
+        <div class="form-label">Student</div>
+        <select class="form-select" id="newStudent" style="min-width:160px"></select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Intervention Type</div>
+        <select class="form-select" id="newType" style="min-width:200px">
+          <option>Personalized Study Plan</option>
+          <option>Peer Tutoring Match</option>
+          <option>Visual Resource Pack</option>
+          <option>1:1 Counseling Session</option>
+          <option>Parent Communication</option>
+          <option>Attendance Alert</option>
+          <option>Spaced Repetition Program</option>
+          <option>Mentorship Assignment</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Priority</div>
+        <select class="form-select" id="newPriority">
+          <option>HIGH</option>
+          <option>MEDIUM</option>
+          <option>LOW</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="addIntervention()">Create Intervention</button>
+    </div>
+    <div id="newIntMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--green-b);margin-top:8px;min-height:18px;"></div>
+  </div>
+
+  <!-- Active interventions table -->
+  <div class="section-title">Active & Recent Interventions</div>
+  <div class="full-card" style="padding:16px">
+    <div id="intDetailList"></div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="chart-row" style="margin-top:20px">
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <div><div class="chart-title">Intervention Outcomes Over Time</div><div class="chart-sub">Average score improvement post-intervention by week</div></div>
+      </div>
+      <canvas id="outcomeChart" height="100"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div><div class="chart-title">Types Used</div><div class="chart-sub">Distribution this semester</div></div>
+      </div>
+      <canvas id="typesPie" height="160"></canvas>
+    </div>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script>
+injectUserIntoSidebar();
+
+const intTypes = [
+  { icon:"📚", title:"Personalized Study Plan", desc:"AI-generated custom curriculum adapting pace, content format, and assessment frequency to individual learning patterns.", rate:92, color:"#3b82f6" },
+  { icon:"👥", title:"Peer Tutoring Program", desc:"Algorithmically matched peer pairs based on complementary strengths and compatible schedules for collaborative support.", rate:88, color:"#10b981" },
+  { icon:"🧠", title:"Cognitive Reframing", desc:"Structured 1:1 sessions addressing academic anxiety, self-belief barriers, and developing a growth mindset.", rate:85, color:"#8b5cf6" },
+  { icon:"📞", title:"Parent Engagement", desc:"Automated alerts and scheduled meetings to align home and school support for struggling students.", rate:78, color:"#f59e0b" },
+  { icon:"🎨", title:"Multi-Modal Resources", desc:"Tailored resource packs matching the student's identified learning style — visual, auditory, or kinesthetic materials.", rate:90, color:"#22d3ee" },
+  { icon:"📅", title:"Attendance Recovery Plan", desc:"Structured re-engagement plan with check-in schedule, make-up work pipeline, and motivational milestones.", rate:82, color:"#ef4444" },
+];
+
+const intGrid = document.getElementById("intTypesGrid");
+intTypes.forEach(t => {
+  intGrid.innerHTML += `
+    <div class="int-type-card">
+      <div class="int-type-icon">${t.icon}</div>
+      <div class="int-type-title">${t.title}</div>
+      <div class="int-type-desc">${t.desc}</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div>
+          <div class="int-success" style="color:${t.color}">${t.rate}%</div>
+          <div class="int-success-label">Success Rate</div>
+        </div>
+        <div style="flex:1;height:6px;background:var(--bg3);border-radius:6px;overflow:hidden">
+          <div style="height:100%;width:${t.rate}%;background:${t.color};border-radius:6px;"></div>
+        </div>
+      </div>
+    </div>`;
+});
+
+// Populate student dropdown
+const sel = document.getElementById("newStudent");
+STUDENTS.filter(s => s.risk !== "NONE").forEach(s => {
+  sel.innerHTML += `<option value="${s.id}">${s.name} (${s.risk})</option>`;
+});
+
+// Render interventions list
+let allInterventions = [...INTERVENTIONS];
+
+function renderInterventions() {
+  const el = document.getElementById("intDetailList");
+  el.innerHTML = "";
+  allInterventions.forEach((i, idx) => {
+    const statusColor = i.status==="Complete"?"green":i.status==="Active"?"blue":"amber";
+    el.innerHTML += `
+      <div class="int-detail-row">
+        <div class="int-num">${i.id}</div>
+        <div class="int-stu">${i.student}</div>
+        <div class="int-typ">${i.type}</div>
+        <div class="int-date">${i.date}</div>
+        <span class="status-tag ${statusColor}">${i.status}</span>
+        <div class="int-out">${i.outcome}</div>
+      </div>`;
+  });
+}
+renderInterventions();
+
+function addIntervention() {
+  const stuId = document.getElementById("newStudent").value;
+  const stu = STUDENTS.find(s => s.id === stuId);
+  const type = document.getElementById("newType").value;
+  const priority = document.getElementById("newPriority").value;
+  const today = new Date().toISOString().split("T")[0];
+  const newInt = {
+    id: `INT${String(allInterventions.length+1).padStart(3,"0")}`,
+    student: stu?.name || "Unknown",
+    type, date: today, status: "Active", outcome: "Monitoring",
+    category: "academic"
+  };
+  allInterventions.unshift(newInt);
+  renderInterventions();
+  document.getElementById("newIntMsg").innerText = `✅ Intervention created for ${newInt.student} — ${type}`;
+  setTimeout(() => document.getElementById("newIntMsg").innerText = "", 3000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Outcome over time chart
+  new Chart(document.getElementById("outcomeChart"), {
+    type:"line",
+    data:{
+      labels:["Wk1","Wk2","Wk3","Wk4","Wk5","Wk6","Wk7","Wk8"],
+      datasets:[
+        { label:"Study Plan", data:[0,3,5,8,10,12,14,16], borderColor:"#3b82f6", backgroundColor:"rgba(59,130,246,0.08)", borderWidth:2.5, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:"#3b82f6" },
+        { label:"Peer Tutoring", data:[0,2,6,9,12,15,18,22], borderColor:"#10b981", backgroundColor:"rgba(16,185,129,0.06)", borderWidth:2.5, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:"#10b981" },
+        { label:"Counseling", data:[0,1,3,5,7,9,11,13], borderColor:"#8b5cf6", backgroundColor:"rgba(139,92,246,0.06)", borderWidth:2.5, tension:0.4, fill:true, pointRadius:4, pointBackgroundColor:"#8b5cf6" },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:"#94a3b8", font:{family:"'IBM Plex Mono'",size:10}, boxWidth:10, padding:14 } }, tooltip:{ backgroundColor:"#141c28", borderColor:"rgba(99,179,237,0.2)", borderWidth:1, titleColor:"#e2e8f0", bodyColor:"#94a3b8", padding:10, bodyFont:{family:"'IBM Plex Mono'",size:11} } },
+      scales:{
+        x:{ grid:{color:"rgba(99,179,237,0.06)"}, ticks:{color:"#64748b",font:{family:"'IBM Plex Mono'",size:10}} },
+        y:{ grid:{color:"rgba(99,179,237,0.06)"}, ticks:{color:"#64748b",font:{family:"'IBM Plex Mono'",size:10},callback:v=>"+"+v+"%"} }
+      }
+    }
+  });
+
+  // Types pie
+  new Chart(document.getElementById("typesPie"), {
+    type:"doughnut",
+    data:{
+      labels:["Study Plan","Peer Tutoring","Counseling","Parent Alert","Resources","Attendance"],
+      datasets:[{ data:[18,14,9,12,8,7], backgroundColor:["#3b82f6cc","#10b981cc","#8b5cf6cc","#f59e0bcc","#22d3eecc","#ef4444cc"], borderColor:["#3b82f6","#10b981","#8b5cf6","#f59e0b","#22d3ee","#ef4444"], borderWidth:2, hoverOffset:6 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"62%",
+      plugins:{ legend:{ position:"bottom", labels:{ color:"#94a3b8", font:{family:"'IBM Plex Mono'",size:9}, boxWidth:8, padding:8 } }, tooltip:{ backgroundColor:"#141c28", borderColor:"rgba(99,179,237,0.2)", borderWidth:1, titleColor:"#e2e8f0", bodyColor:"#94a3b8", padding:8 } }
+    }
+  });
+});
+</script>
+</body>
+</html>
