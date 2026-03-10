@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI — Intelligent Academic Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⬡</div>
+    <div>
+      <div class="brand-name">EduAI</div>
+      <div class="brand-sub">Analytics v2.0</div>
+    </div>
+  </div>
+
+  <nav class="nav-links">
+    <a href="index.html" class="nav-item active" data-label="Overview">
+      <span class="nav-icon">◈</span><span class="nav-text">Overview</span>
+    </a>
+    <a href="students.html" class="nav-item" data-label="Students">
+      <span class="nav-icon">◉</span><span class="nav-text">Students</span>
+    </a>
+    <a href="patterns.html" class="nav-item" data-label="Patterns">
+      <span class="nav-icon">◫</span><span class="nav-text">Learning Patterns</span>
+    </a>
+    <a href="predict.html" class="nav-item" data-label="Predict">
+      <span class="nav-icon">◬</span><span class="nav-text">Predictions</span>
+    </a>
+    <a href="interventions.html" class="nav-item" data-label="Interventions">
+      <span class="nav-icon">◐</span><span class="nav-text">Interventions</span>
+    </a>
+    <a href="ai-chat.html" class="nav-item" data-label="AI Advisor">
+      <span class="nav-icon">◑</span><span class="nav-text">AI Advisor</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-stats">
+    <div class="ss-item"><span class="ss-num">247</span><span class="ss-label">Students</span></div>
+    <div class="ss-item"><span class="ss-num">94%</span><span class="ss-label">Accuracy</span></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main id="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Academic Overview</h1>
+      <span class="page-sub">Spring 2025 — Real-time AI Analytics</span>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span>Live Analysis</div>
+      <div class="date-chip" id="dateChip"></div>
+    </div>
+  </header>
+
+  <!-- KPI STRIP -->
+  <section class="kpi-strip">
+    <div class="kpi-card" data-color="blue">
+      <div class="kpi-icon">📊</div>
+      <div class="kpi-body">
+        <div class="kpi-val" data-target="247">0</div>
+        <div class="kpi-label">Total Students</div>
+        <div class="kpi-delta up">+12 this semester</div>
+      </div>
+    </div>
+    <div class="kpi-card" data-color="green">
+      <div class="kpi-icon">🎯</div>
+      <div class="kpi-body">
+        <div class="kpi-val" data-target="73" data-suffix="%">0%</div>
+        <div class="kpi-label">On-Track Rate</div>
+        <div class="kpi-delta up">+5% vs last term</div>
+      </div>
+    </div>
+    <div class="kpi-card" data-color="amber">
+      <div class="kpi-icon">⚠️</div>
+      <div class="kpi-body">
+        <div class="kpi-val" data-target="31">0</div>
+        <div class="kpi-label">At-Risk Students</div>
+        <div class="kpi-delta down">-8 from last week</div>
+      </div>
+    </div>
+    <div class="kpi-card" data-color="purple">
+      <div class="kpi-icon">🧠</div>
+      <div class="kpi-body">
+        <div class="kpi-val" data-target="6">0</div>
+        <div class="kpi-label">Learning Patterns</div>
+        <div class="kpi-delta up">AI-identified</div>
+      </div>
+    </div>
+    <div class="kpi-card" data-color="cyan">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-body">
+        <div class="kpi-val" data-target="89" data-suffix="%">0%</div>
+        <div class="kpi-label">Intervention Success</div>
+        <div class="kpi-delta up">+3% this month</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHART ROW -->
+  <section class="chart-row">
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Performance Trends</div>
+          <div class="chart-sub">7-week rolling average by subject</div>
+        </div>
+        <div class="chart-controls">
+          <button class="ctrl-btn active" onclick="setRange(this,'7w')">7W</button>
+          <button class="ctrl-btn" onclick="setRange(this,'30d')">30D</button>
+          <button class="ctrl-btn" onclick="setRange(this,'sem')">SEM</button>
+        </div>
+      </div>
+      <canvas id="performanceChart" height="90"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Learning Style Distribution</div>
+          <div class="chart-sub">AI-classified patterns</div>
+        </div>
+      </div>
+      <canvas id="styleChart" height="160"></canvas>
+      <div class="legend-grid" id="styleLegend"></div>
+    </div>
+  </section>
+
+  <!-- BOTTOM ROW -->
+  <section class="bottom-row">
+    <!-- At-Risk Alert Feed -->
+    <div class="panel alerts-panel">
+      <div class="panel-header">
+        <span class="panel-title">🚨 At-Risk Alerts</span>
+        <span class="badge red">31 active</span>
+      </div>
+      <div class="alert-list" id="alertList"></div>
+    </div>
+
+    <!-- Pattern Summary -->
+    <div class="panel patterns-panel">
+      <div class="panel-header">
+        <span class="panel-title">🧠 Detected Patterns</span>
+        <a href="patterns.html" class="panel-link">View all →</a>
+      </div>
+      <div class="pattern-grid" id="patternGrid"></div>
+    </div>
+
+    <!-- Recent Interventions -->
+    <div class="panel interventions-panel">
+      <div class="panel-header">
+        <span class="panel-title">✅ Recent Interventions</span>
+        <a href="interventions.html" class="panel-link">View all →</a>
+      </div>
+      <div class="intervention-list" id="interventionList"></div>
+    </div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script>
+  // Auth guard
+  injectUserIntoSidebar();
+
+  // Date chip
+  document.getElementById("dateChip").innerText = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+
+  // Animate KPI counters
+  document.querySelectorAll(".kpi-val").forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const suffix = el.dataset.suffix || "";
+    let cur = 0;
+    const step = Math.ceil(target / 40);
+    const t = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.innerText = cur + suffix;
+      if (cur >= target) clearInterval(t);
+    }, 30);
+  });
+
+  // Alert list
+  const alerts = [
+    { name: "Arjun Mehta", issue: "3 missed submissions + declining quiz scores", risk: "HIGH", subject: "Mathematics" },
+    { name: "Priya Sharma", issue: "Attendance dropped to 58% this week", risk: "HIGH", subject: "Physics" },
+    { name: "Rahul Verma", issue: "Consistent underperformance in assessments", risk: "MED", subject: "Chemistry" },
+    { name: "Sneha Patel", issue: "Engagement score fell 40% in 2 weeks", risk: "MED", subject: "English" },
+    { name: "Kiran Das", issue: "No submissions last 5 days", risk: "HIGH", subject: "Biology" },
+  ];
+  const alertEl = document.getElementById("alertList");
+  alerts.forEach(a => {
+    alertEl.innerHTML += `
+      <div class="alert-item">
+        <div class="alert-avatar">${a.name[0]}</div>
+        <div class="alert-body">
+          <div class="alert-name">${a.name} <span class="risk-tag ${a.risk.toLowerCase()}">${a.risk}</span></div>
+          <div class="alert-desc">${a.issue}</div>
+          <div class="alert-subject">${a.subject}</div>
+        </div>
+        <a href="students.html" class="alert-act">Act →</a>
+      </div>`;
+  });
+
+  // Pattern grid
+  const patterns = [
+    { icon: "⚡", name: "Visual Learners", count: 68, color: "#3b82f6" },
+    { icon: "🎧", name: "Auditory Learners", count: 42, color: "#8b5cf6" },
+    { icon: "🤝", name: "Collaborative", count: 57, color: "#10b981" },
+    { icon: "🎯", name: "Self-Directed", count: 38, color: "#f59e0b" },
+    { icon: "🔁", name: "Repetition-Based", count: 29, color: "#ef4444" },
+    { icon: "🌊", name: "Exploratory", count: 13, color: "#06b6d4" },
+  ];
+  const patGrid = document.getElementById("patternGrid");
+  patterns.forEach(p => {
+    patGrid.innerHTML += `
+      <div class="pat-item">
+        <div class="pat-icon">${p.icon}</div>
+        <div class="pat-info">
+          <div class="pat-name">${p.name}</div>
+          <div class="pat-bar-wrap"><div class="pat-bar" style="width:${(p.count/247*100).toFixed(0)}%;background:${p.color}"></div></div>
+        </div>
+        <div class="pat-count" style="color:${p.color}">${p.count}</div>
+      </div>`;
+  });
+
+  // Interventions
+  const interventions = [
+    { student: "Riya Kapoor", type: "Personalized Study Plan", status: "Active", outcome: "+18% quiz score" },
+    { student: "Dev Sharma", type: "Peer Tutoring Match", status: "Complete", outcome: "+22% grade" },
+    { student: "Ananya Roy", type: "Visual Resource Pack", status: "Active", outcome: "Monitoring" },
+    { student: "Vikram Singh", type: "1:1 Counseling Session", status: "Scheduled", outcome: "Pending" },
+  ];
+  const intEl = document.getElementById("interventionList");
+  interventions.forEach(i => {
+    const statusColor = i.status === "Complete" ? "green" : i.status === "Active" ? "blue" : "amber";
+    intEl.innerHTML += `
+      <div class="int-item">
+        <div class="int-left">
+          <div class="int-name">${i.student}</div>
+          <div class="int-type">${i.type}</div>
+        </div>
+        <div class="int-right">
+          <span class="status-tag ${statusColor}">${i.status}</span>
+          <div class="int-outcome">${i.outcome}</div>
+        </div>
+      </div>`;
+  });
+</script>
+</body>
+</html>
