@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI — Predictions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+  <style>
+    .predict-student-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+    .predict-student-row:hover { border-color: var(--border2); }
+    .pscore { font-family: var(--font-mono); font-size: 22px; font-weight: 700; min-width: 52px; text-align: center; }
+    .pname { font-size: 13px; font-weight: 600; color: var(--text); }
+    .pbehavior { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .pbar-wrap { flex: 1; height: 6px; background: var(--bg3); border-radius: 6px; overflow: hidden; }
+    .pbar-fill { height: 100%; border-radius: 6px; }
+    .prob-pct { font-family: var(--font-mono); font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+    .forecast-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .forecast-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; text-align: center;
+    }
+    .forecast-icon { font-size: 26px; margin-bottom: 8px; }
+    .forecast-val { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--cyan); }
+    .forecast-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 3px; }
+    .forecast-sub { font-size: 11px; color: var(--text2); margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⬡</div>
+    <div><div class="brand-name">EduAI</div><div class="brand-sub">Analytics v2.0</div></div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html"  class="nav-item"><span class="nav-icon">◈</span><span class="nav-text">Overview</span></a>
+    <a href="students.html" class="nav-item"><span class="nav-icon">◉</span><span class="nav-text">Students</span></a>
+    <a href="patterns.html" class="nav-item"><span class="nav-icon">◫</span><span class="nav-text">Learning Patterns</span></a>
+    <a href="predict.html"  class="nav-item active"><span class="nav-icon">◬</span><span class="nav-text">Predictions</span></a>
+    <a href="interventions.html" class="nav-item"><span class="nav-icon">◐</span><span class="nav-text">Interventions</span></a>
+    <a href="ai-chat.html"  class="nav-item"><span class="nav-icon">◑</span><span class="nav-text">AI Advisor</span></a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="ss-item"><span class="ss-num">247</span><span class="ss-label">Students</span></div>
+    <div class="ss-item"><span class="ss-num">94%</span><span class="ss-label">Accuracy</span></div>
+  </div>
+</aside>
+
+<main id="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Performance Predictions</h1>
+      <span class="page-sub">AI-forecasted outcomes for end-of-semester based on current trajectories</span>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span>Model Active</div>
+    </div>
+  </header>
+
+  <!-- Model info card -->
+  <div class="full-card" style="background:linear-gradient(135deg,rgba(59,130,246,0.05),rgba(139,92,246,0.05));border-color:rgba(59,130,246,0.15);margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="font-size:36px;">◬</div>
+      <div style="flex:1">
+        <div style="font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--blue-b);margin-bottom:4px;">Predictive Model: EduAI-Forecast v2</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6">Trained on 3 semesters of academic and behavioral data. Uses <strong style="color:var(--text)">gradient-boosted decision trees</strong> with 18 feature inputs: attendance rate, engagement score, submission consistency, quiz performance trends, peer interaction, and more. Predictions updated daily.</div>
+      </div>
+      <div style="display:flex;gap:14px;flex-shrink:0">
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--cyan)">94%</div><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Accuracy</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--green-b)">18</div><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Features</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--amber-b)">Daily</div><div style="font-size:10px;color:var(--text3);text-transform:uppercase">Updates</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forecast KPIs -->
+  <div class="section-title">End-of-Semester Forecast</div>
+  <div class="forecast-grid">
+    <div class="forecast-card">
+      <div class="forecast-icon">📈</div>
+      <div class="forecast-val">74%</div>
+      <div class="forecast-label">Pass Rate</div>
+      <div class="forecast-sub">+3% from current</div>
+    </div>
+    <div class="forecast-card">
+      <div class="forecast-icon">🏆</div>
+      <div class="forecast-val">38</div>
+      <div class="forecast-label">Expected Distinction</div>
+      <div class="forecast-sub">Students scoring 90%+</div>
+    </div>
+    <div class="forecast-card">
+      <div class="forecast-icon">⚠️</div>
+      <div class="forecast-val">24</div>
+      <div class="forecast-label">Predicted Failures</div>
+      <div class="forecast-sub">Without intervention</div>
+    </div>
+    <div class="forecast-card">
+      <div class="forecast-icon">🎯</div>
+      <div class="forecast-val">+11%</div>
+      <div class="forecast-label">With Interventions</div>
+      <div class="forecast-sub">Estimated improvement</div>
+    </div>
+  </div>
+
+  <!-- Prediction grids -->
+  <div class="predict-grid">
+    <div class="predict-card">
+      <div class="predict-title">🔴 High Failure Risk</div>
+      <div class="predict-sub">Students predicted to score below 50% without intervention</div>
+      <div class="predict-list" id="highRiskList"></div>
+    </div>
+    <div class="predict-card">
+      <div class="predict-title">🟡 Borderline Students</div>
+      <div class="predict-sub">Students within 10% of passing threshold — key intervention targets</div>
+      <div class="predict-list" id="medRiskList"></div>
+    </div>
+  </div>
+
+  <!-- Main prediction chart -->
+  <div class="full-card">
+    <div class="chart-header" style="margin-bottom:20px">
+      <div>
+        <div class="chart-title">Predicted End-of-Semester Scores — All Students</div>
+        <div class="chart-sub">Blue = current avg · Cyan = predicted with intervention · Orange = predicted without</div>
+      </div>
+    </div>
+    <div style="height:280px"><canvas id="predictMainChart"></canvas></div>
+  </div>
+
+  <!-- Score distribution -->
+  <div class="chart-row">
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <div><div class="chart-title">Score Distribution Forecast</div><div class="chart-sub">Grade band distribution at end of semester</div></div>
+      </div>
+      <div style="height:200px"><canvas id="distChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div><div class="chart-title">Top Performers</div><div class="chart-sub">Predicted distinction students</div></div>
+      </div>
+      <div id="topPerformers"></div>
+    </div>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script>
+injectUserIntoSidebar();
+
+// Generate predictions based on student data
+function predictScore(s) {
+  const base = Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4);
+  const attBonus = (s.attendance - 75) * 0.15;
+  const engBonus = (s.engagement - 60) * 0.1;
+  const trendAdj = s.trend * 0.8;
+  return Math.min(99, Math.max(15, Math.round(base + attBonus + engBonus + trendAdj)));
+}
+
+function predictWithIntervention(s) {
+  const base = predictScore(s);
+  if (s.risk === "HIGH") return Math.min(85, base + 18);
+  if (s.risk === "MED") return Math.min(90, base + 10);
+  if (s.risk === "LOW") return Math.min(95, base + 5);
+  return base;
+}
+
+const highRisk = STUDENTS.filter(s => predictScore(s) < 50).sort((a,b) => predictScore(a) - predictScore(b));
+const medRisk  = STUDENTS.filter(s => predictScore(s) >= 50 && predictScore(s) < 65).sort((a,b) => predictScore(a) - predictScore(b));
+
+function riskColor(score) {
+  if (score < 40) return "var(--red-b)";
+  if (score < 55) return "var(--amber-b)";
+  return "var(--blue-b)";
+}
+
+function renderPredictList(students, elId) {
+  const el = document.getElementById(elId);
+  students.slice(0,6).forEach(s => {
+    const predicted = predictScore(s);
+    const withInt = predictWithIntervention(s);
+    const color = riskColor(predicted);
+    const avgScore = Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4);
+    el.innerHTML += `
+      <div class="predict-student-row">
+        <div class="pscore" style="color:${color}">${predicted}%</div>
+        <div style="flex:1;min-width:0">
+          <div class="pname">${s.name}</div>
+          <div class="pbehavior">${s.pattern} learner · ${s.behavior}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:5px">
+            <div class="pbar-wrap"><div class="pbar-fill" style="width:${predicted}%;background:${color}"></div></div>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text3)">With intervention</div>
+          <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--green-b)">→ ${withInt}%</div>
+        </div>
+      </div>`;
+  });
+}
+
+renderPredictList(highRisk, "highRiskList");
+renderPredictList(medRisk, "medRiskList");
+
+// Top performers
+const topPerfEl = document.getElementById("topPerformers");
+STUDENTS.filter(s => predictWithIntervention(s) >= 88).sort((a,b) => predictWithIntervention(b) - predictWithIntervention(a)).slice(0,6).forEach((s,i) => {
+  const pred = predictWithIntervention(s);
+  topPerfEl.innerHTML += `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:var(--surface2);margin-bottom:6px;">
+      <div style="font-family:var(--font-mono);font-size:12px;color:var(--text3);width:16px">#${i+1}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${s.name}</div><div style="font-size:10px;color:var(--text3)">${s.pattern}</div></div>
+      <div style="font-family:var(--font-display);font-size:16px;font-weight:800;color:${pred>=92?'var(--cyan)':'var(--green-b)'}">${pred}%</div>
+    </div>`;
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Main prediction chart
+  const names = STUDENTS.map(s => s.name.split(" ")[0]);
+  const current = STUDENTS.map(s => Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4));
+  const withoutInt = STUDENTS.map(s => predictScore(s));
+  const withInt = STUDENTS.map(s => predictWithIntervention(s));
+
+  new Chart(document.getElementById("predictMainChart"), {
+    type:"bar",
+    data:{
+      labels: names,
+      datasets:[
+        { label:"Current Avg", data: current, backgroundColor:"rgba(59,130,246,0.5)", borderColor:"#3b82f6", borderWidth:1, borderRadius:4 },
+        { label:"Without Intervention", data: withoutInt, backgroundColor:"rgba(245,158,11,0.4)", borderColor:"#f59e0b", borderWidth:1, borderRadius:4 },
+        { label:"With Intervention", data: withInt, backgroundColor:"rgba(34,211,238,0.4)", borderColor:"#22d3ee", borderWidth:1, borderRadius:4 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ labels:{ color:"#94a3b8", font:{family:"'IBM Plex Mono'",size:10}, boxWidth:10 } },
+        tooltip:{ backgroundColor:"#141c28", borderColor:"rgba(99,179,237,0.2)", borderWidth:1, titleColor:"#e2e8f0", bodyColor:"#94a3b8", padding:10, titleFont:{family:"'Syne'",weight:"700"}, bodyFont:{family:"'IBM Plex Mono'",size:11} }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:"#64748b",font:{size:9},maxRotation:45} },
+        y:{ min:0,max:100, grid:{color:"rgba(99,179,237,0.06)"}, ticks:{color:"#64748b",font:{family:"'IBM Plex Mono'",size:10},callback:v=>v+"%"} }
+      }
+    }
+  });
+
+  // Distribution chart
+  const bands = ["0-49%","50-59%","60-69%","70-79%","80-89%","90-100%"];
+  const counts = [0,0,0,0,0,0];
+  STUDENTS.forEach(s => {
+    const p = predictWithIntervention(s);
+    if(p<50) counts[0]++;
+    else if(p<60) counts[1]++;
+    else if(p<70) counts[2]++;
+    else if(p<80) counts[3]++;
+    else if(p<90) counts[4]++;
+    else counts[5]++;
+  });
+
+  new Chart(document.getElementById("distChart"), {
+    type:"bar",
+    data:{
+      labels: bands,
+      datasets:[{ label:"Students", data:counts, backgroundColor:["#ef444499","#f59e0b99","#fbbf2499","#3b82f699","#10b98199","#22d3ee99"], borderColor:["#ef4444","#f59e0b","#fbbf24","#3b82f6","#10b981","#22d3ee"], borderWidth:2, borderRadius:8 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ backgroundColor:"#141c28", borderColor:"rgba(99,179,237,0.2)", borderWidth:1, titleColor:"#e2e8f0", bodyColor:"#94a3b8", padding:10 } },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:"#94a3b8",font:{family:"'IBM Plex Mono'",size:11}} },
+        y:{ grid:{color:"rgba(99,179,237,0.06)"}, ticks:{color:"#64748b",font:{family:"'IBM Plex Mono'",size:10}} }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
