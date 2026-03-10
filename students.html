@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI — Students</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+  <style>
+    .table-wrap { overflow-x: auto; }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .student-modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 18px;
+      padding: 28px;
+      width: 700px;
+      max-width: calc(100vw - 32px);
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.25s;
+    }
+    .modal-overlay.show .student-modal { transform: scale(1); }
+    .modal-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .modal-name { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text); }
+    .modal-id { font-family: var(--font-mono); font-size: 11px; color: var(--text3); margin-top: 3px; }
+    .close-x { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .close-x:hover { background: var(--red); color: white; border-color: var(--red); }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .modal-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .modal-stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-family: var(--font-mono); }
+    .modal-stat-val { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--cyan); }
+    .modal-subjects { margin-bottom: 18px; }
+    .sub-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .sub-name { font-size: 12px; color: var(--text2); width: 70px; flex-shrink: 0; font-weight: 600; }
+    .sub-bar-wrap { flex: 1; height: 8px; background: var(--bg3); border-radius: 8px; overflow: hidden; }
+    .sub-bar-fill { height: 100%; border-radius: 8px; transition: width 0.8s ease; }
+    .sub-score { font-family: var(--font-mono); font-size: 12px; font-weight: 600; width: 36px; text-align: right; }
+    .ai-box { background: var(--bg2); border: 1px solid rgba(34,211,238,0.2); border-radius: 10px; padding: 14px; margin-top: 16px; }
+    .ai-box-title { font-size: 11px; color: var(--cyan); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .ai-box-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .ai-loading-text { color: var(--text3); font-style: italic; }
+  </style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⬡</div>
+    <div>
+      <div class="brand-name">EduAI</div>
+      <div class="brand-sub">Analytics v2.0</div>
+    </div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html"  class="nav-item"><span class="nav-icon">◈</span><span class="nav-text">Overview</span></a>
+    <a href="students.html" class="nav-item active"><span class="nav-icon">◉</span><span class="nav-text">Students</span></a>
+    <a href="patterns.html" class="nav-item"><span class="nav-icon">◫</span><span class="nav-text">Learning Patterns</span></a>
+    <a href="predict.html"  class="nav-item"><span class="nav-icon">◬</span><span class="nav-text">Predictions</span></a>
+    <a href="interventions.html" class="nav-item"><span class="nav-icon">◐</span><span class="nav-text">Interventions</span></a>
+    <a href="ai-chat.html"  class="nav-item"><span class="nav-icon">◑</span><span class="nav-text">AI Advisor</span></a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="ss-item"><span class="ss-num">247</span><span class="ss-label">Students</span></div>
+    <div class="ss-item"><span class="ss-num">94%</span><span class="ss-label">Accuracy</span></div>
+  </div>
+</aside>
+
+<main id="main">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title">Student Analytics</h1>
+      <span class="page-sub">Behavioral & academic profiles — AI-enhanced</span>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span>Live</div>
+    </div>
+  </header>
+
+  <!-- Search & Filters -->
+  <div class="search-bar">
+    <input class="search-input" id="searchInput" type="text" placeholder="Search students by name, ID or pattern…" oninput="filterStudents()">
+    <select class="filter-select" id="riskFilter" onchange="filterStudents()">
+      <option value="">All Risk Levels</option>
+      <option value="HIGH">High Risk</option>
+      <option value="MED">Medium Risk</option>
+      <option value="LOW">Low Risk</option>
+      <option value="NONE">No Risk</option>
+    </select>
+    <select class="filter-select" id="patternFilter" onchange="filterStudents()">
+      <option value="">All Patterns</option>
+      <option value="visual">Visual</option>
+      <option value="auditory">Auditory</option>
+      <option value="collaborative">Collaborative</option>
+      <option value="self-directed">Self-Directed</option>
+      <option value="repetition">Repetition</option>
+      <option value="exploratory">Exploratory</option>
+      <option value="at-risk">At-Risk</option>
+    </select>
+    <button class="btn btn-primary" onclick="exportCSV()">⬇ Export</button>
+  </div>
+
+  <!-- Stats row -->
+  <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr);margin-bottom:18px;">
+    <div class="kpi-card" data-color="blue"><div class="kpi-icon">👥</div><div class="kpi-body"><div class="kpi-val" id="totalCount">20</div><div class="kpi-label">Showing</div></div></div>
+    <div class="kpi-card" data-color="red"><div class="kpi-icon">🚨</div><div class="kpi-body"><div class="kpi-val" id="highCount">0</div><div class="kpi-label">High Risk</div></div></div>
+    <div class="kpi-card" data-color="amber"><div class="kpi-icon">⚠️</div><div class="kpi-body"><div class="kpi-val" id="medCount">0</div><div class="kpi-label">Med Risk</div></div></div>
+    <div class="kpi-card" data-color="green"><div class="kpi-icon">✅</div><div class="kpi-body"><div class="kpi-val" id="okCount">0</div><div class="kpi-label">On Track</div></div></div>
+  </div>
+
+  <!-- Table -->
+  <div class="full-card" style="padding:0;overflow:hidden;">
+    <div class="table-wrap">
+      <table class="data-table" id="studentTable">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Grade</th>
+            <th>GPA</th>
+            <th>Attendance</th>
+            <th>Engagement</th>
+            <th>Learning Pattern</th>
+            <th>7-Day Trend</th>
+            <th>Submissions</th>
+            <th>Risk</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="studentBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="student-modal">
+    <div class="modal-top">
+      <div>
+        <div class="modal-name" id="modalName"></div>
+        <div class="modal-id" id="modalId"></div>
+      </div>
+      <button class="close-x" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-grid" id="modalGrid"></div>
+    <div class="section-title" style="font-size:14px;margin-bottom:12px;">📊 Subject Performance</div>
+    <div class="modal-subjects" id="modalSubjects"></div>
+    <canvas id="radarChart" height="200"></canvas>
+    <div class="ai-box">
+      <div class="ai-box-title"><span class="spin"></span> AI Analysis</div>
+      <div class="ai-box-text ai-loading-text" id="aiAnalysis">Analyzing student profile…</div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script>
+injectUserIntoSidebar();
+
+const AVTAR_COLORS = ["#3b82f6","#8b5cf6","#10b981","#f59e0b","#ef4444","#06b6d4","#ec4899","#84cc16"];
+const patternColors = { visual:"#3b82f6", auditory:"#8b5cf6", collaborative:"#10b981", "self-directed":"#f59e0b", repetition:"#ef4444", exploratory:"#06b6d4", "at-risk":"#f87171" };
+
+function getScoreClass(s) { return s >= 75 ? "high" : s >= 60 ? "mid" : "low"; }
+
+function renderTable(students) {
+  const tbody = document.getElementById("studentBody");
+  tbody.innerHTML = "";
+  let hi=0, med=0, ok=0;
+  students.forEach((s, i) => {
+    if(s.risk === "HIGH") hi++;
+    else if(s.risk === "MED") med++;
+    else ok++;
+    const avgScore = Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4);
+    const scoreClass = getScoreClass(avgScore);
+    const trendColor = s.trend > 0 ? "var(--green-b)" : s.trend < -5 ? "var(--red-b)" : "var(--amber-b)";
+    const trendSign = s.trend > 0 ? "▲" : "▼";
+    const riskColor = s.risk==="HIGH"?"high":s.risk==="MED"?"med":"";
+    const pColor = patternColors[s.pattern] || "#94a3b8";
+    const avColor = AVTAR_COLORS[i % AVTAR_COLORS.length];
+
+    tbody.innerHTML += `
+      <tr>
+        <td>
+          <div class="student-cell">
+            <div class="stu-avatar" style="background:${avColor}">${s.name[0]}</div>
+            <div><div class="stu-name">${s.name}</div><div class="stu-id">${s.id}</div></div>
+          </div>
+        </td>
+        <td style="color:var(--text2);font-family:var(--font-mono);font-size:12px;">Gr. ${s.grade}</td>
+        <td><span class="score-pill ${scoreClass}">${s.gpa.toFixed(1)}</span></td>
+        <td>
+          <div class="trend-bar">
+            <div class="mini-bar"><div class="mini-fill" style="width:${s.attendance}%;background:${s.attendance>75?'var(--green)':s.attendance>55?'var(--amber)':'var(--red)'}"></div></div>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">${s.attendance}%</span>
+          </div>
+        </td>
+        <td>
+          <div class="trend-bar">
+            <div class="mini-bar"><div class="mini-fill" style="width:${s.engagement}%;background:${s.engagement>70?'var(--cyan)':s.engagement>45?'var(--amber)':'var(--red)'}"></div></div>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">${s.engagement}%</span>
+          </div>
+        </td>
+        <td><span style="padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;background:${pColor}22;color:${pColor};border:1px solid ${pColor}44;font-family:var(--font-mono);text-transform:capitalize">${s.pattern}</span></td>
+        <td style="color:${trendColor};font-family:var(--font-mono);font-size:12px;font-weight:600;">${trendSign} ${Math.abs(s.trend)}%</td>
+        <td style="font-family:var(--font-mono);font-size:12px;color:var(--text2)">${s.submitted}/${s.total}</td>
+        <td>${s.risk !== "NONE" ? `<span class="risk-tag ${s.risk.toLowerCase()}">${s.risk}</span>` : `<span style="font-size:11px;color:var(--text3)">—</span>`}</td>
+        <td>
+          <button onclick="openModal('${s.id}')" style="padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--cyan);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(34,211,238,0.1)'" onmouseout="this.style.background='var(--surface2)'">
+            Profile →
+          </button>
+        </td>
+      </tr>`;
+  });
+
+  document.getElementById("totalCount").innerText = students.length;
+  document.getElementById("highCount").innerText = hi;
+  document.getElementById("medCount").innerText = med;
+  document.getElementById("okCount").innerText = ok;
+}
+
+function filterStudents() {
+  const q = document.getElementById("searchInput").value.toLowerCase();
+  const risk = document.getElementById("riskFilter").value;
+  const pat = document.getElementById("patternFilter").value;
+  const filtered = STUDENTS.filter(s => {
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q) || s.pattern.includes(q);
+    const matchR = !risk || s.risk === risk;
+    const matchP = !pat || s.pattern === pat;
+    return matchQ && matchR && matchP;
+  });
+  renderTable(filtered);
+}
+
+function openModal(id) {
+  const s = STUDENTS.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById("modalName").innerText = s.name;
+  document.getElementById("modalId").innerText = `${s.id} · Grade ${s.grade} · ${s.pattern.charAt(0).toUpperCase()+s.pattern.slice(1)} Learner`;
+
+  const avgScore = Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4);
+  document.getElementById("modalGrid").innerHTML = `
+    <div class="modal-stat"><div class="modal-stat-label">GPA</div><div class="modal-stat-val">${s.gpa.toFixed(1)}</div></div>
+    <div class="modal-stat"><div class="modal-stat-label">Avg Score</div><div class="modal-stat-val">${avgScore}%</div></div>
+    <div class="modal-stat"><div class="modal-stat-label">Attendance</div><div class="modal-stat-val">${s.attendance}%</div></div>
+    <div class="modal-stat"><div class="modal-stat-label">Engagement</div><div class="modal-stat-val">${s.engagement}%</div></div>
+  `;
+
+  const subColors = ["#3b82f6","#22d3ee","#10b981","#f59e0b"];
+  const subNames = Object.keys(s.subjects);
+  document.getElementById("modalSubjects").innerHTML = subNames.map((sub, i) => `
+    <div class="sub-row">
+      <div class="sub-name">${sub.charAt(0).toUpperCase()+sub.slice(1)}</div>
+      <div class="sub-bar-wrap"><div class="sub-bar-fill" style="width:${s.subjects[sub]}%;background:${subColors[i]}"></div></div>
+      <div class="sub-score" style="color:${subColors[i]}">${s.subjects[sub]}%</div>
+    </div>`).join("");
+
+  document.getElementById("modalOverlay").classList.add("show");
+
+  // Rebuild radar
+  setTimeout(() => { buildRadarChart("radarChart", s); }, 50);
+
+  // AI analysis
+  const aiEl = document.getElementById("aiAnalysis");
+  aiEl.innerHTML = `<span class="ai-loading-text">Analyzing ${s.name}'s academic profile…</span>`;
+  generateStudentInsight(s).then(text => {
+    aiEl.classList.remove("ai-loading-text");
+    aiEl.innerHTML = text;
+  });
+}
+
+async function generateStudentInsight(s) {
+  const avgScore = Math.round(Object.values(s.subjects).reduce((a,b)=>a+b,0)/4);
+  const prompt = `You are an AI academic advisor. Analyze this student profile and give a 3-sentence personalized insight and recommendation:
+Student: ${s.name}, Grade ${s.grade}
+GPA: ${s.gpa}, Avg Score: ${avgScore}%, Attendance: ${s.attendance}%, Engagement: ${s.engagement}%
+Subjects: Math ${s.subjects.math}%, Science ${s.subjects.science}%, English ${s.subjects.english}%, History ${s.subjects.history}%
+Learning Pattern: ${s.pattern}, Behavior: ${s.behavior}, Risk: ${s.risk}
+7-day trend: ${s.trend}%, Submissions: ${s.submitted}/${s.total}
+
+Give actionable insights and specific interventions. Be concise and data-driven.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    return data.content[0].text;
+  } catch(e) {
+    const tips = {
+      "HIGH": `⚠️ <strong>${s.name}</strong> shows critical risk indicators — attendance at ${s.attendance}%, engagement at ${s.engagement}%, and a ${s.trend}% declining trend. Immediate intervention recommended: schedule a 1:1 counseling session, contact parents, and assign a peer mentor. Focus support on ${Object.entries(s.subjects).sort((a,b)=>a[1]-b[1])[0][0]} as the weakest subject.`,
+      "MED": `📊 <strong>${s.name}</strong> is underperforming relative to their potential. The ${s.pattern} learning style suggests adapting content delivery — try ${s.pattern === 'visual' ? 'diagram-based resources and color-coded notes' : s.pattern === 'auditory' ? 'audio recordings and discussion groups' : 'group study and collaborative projects'}. With ${s.trend}% trend shift, early intervention now can prevent escalation.`,
+      "LOW": `📈 <strong>${s.name}</strong> is mostly stable but showing minor dips. As a ${s.pattern} learner with ${s.engagement}% engagement, consider enrichment activities to re-energize motivation. Monitor weekly.`,
+      "NONE": `✅ <strong>${s.name}</strong> is performing excellently with a ${s.trend > 0 ? 'positive' : 'stable'} ${Math.abs(s.trend)}% trend. As a ${s.pattern} learner, consider offering advanced challenges or peer-mentorship opportunities to maintain high engagement at ${s.engagement}%.`
+    };
+    return tips[s.risk] || "Unable to generate analysis at this time.";
+  }
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+
+function exportCSV() {
+  const headers = ["ID","Name","Grade","GPA","Attendance","Engagement","Pattern","Risk","Math","Science","English","History"];
+  const rows = STUDENTS.map(s => [s.id,s.name,s.grade,s.gpa,s.attendance,s.engagement,s.pattern,s.risk,s.subjects.math,s.subjects.science,s.subjects.english,s.subjects.history]);
+  const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  a.download = "eduai-students.csv";
+  a.click();
+}
+
+document.getElementById("modalOverlay").addEventListener("click", e => {
+  if (e.target === document.getElementById("modalOverlay")) closeModal();
+});
+
+renderTable(STUDENTS);
+</script>
+</body>
+</html>
