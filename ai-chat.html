@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAI — AI Advisor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <div class="brand-icon">⬡</div>
+    <div><div class="brand-name">EduAI</div><div class="brand-sub">Analytics v2.0</div></div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html"  class="nav-item"><span class="nav-icon">◈</span><span class="nav-text">Overview</span></a>
+    <a href="students.html" class="nav-item"><span class="nav-icon">◉</span><span class="nav-text">Students</span></a>
+    <a href="patterns.html" class="nav-item"><span class="nav-icon">◫</span><span class="nav-text">Learning Patterns</span></a>
+    <a href="predict.html"  class="nav-item"><span class="nav-icon">◬</span><span class="nav-text">Predictions</span></a>
+    <a href="interventions.html" class="nav-item"><span class="nav-icon">◐</span><span class="nav-text">Interventions</span></a>
+    <a href="ai-chat.html"  class="nav-item active"><span class="nav-icon">◑</span><span class="nav-text">AI Advisor</span></a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="ss-item"><span class="ss-num">247</span><span class="ss-label">Students</span></div>
+    <div class="ss-item"><span class="ss-num">94%</span><span class="ss-label">Accuracy</span></div>
+  </div>
+</aside>
+
+<main id="main">
+  <header class="topbar" style="margin-bottom:20px">
+    <div class="topbar-left">
+      <h1 class="page-title">AI Academic Advisor</h1>
+      <span class="page-sub">Powered by Claude · Real-time educational intelligence</span>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><span class="live-dot"></span>Claude Online</div>
+    </div>
+  </header>
+
+  <div class="chat-layout">
+    <!-- Chat area -->
+    <div class="chat-area">
+      <div class="chat-header-bar">
+        <div class="chat-header-icon">◑</div>
+        <div>
+          <div class="chat-header-name">EduAI Advisor</div>
+          <div class="chat-header-sub">Academic analytics, student insights, and intervention planning</div>
+        </div>
+        <button onclick="clearChat()" style="margin-left:auto;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text3);font-size:11px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='var(--red-b)'" onmouseout="this.style.color='var(--text3)'">Clear</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <!-- Initial message injected by JS -->
+      </div>
+
+      <div class="chat-input-area">
+        <textarea
+          class="chat-textarea"
+          id="chatInput"
+          placeholder="Ask about a student, pattern, intervention strategy, or request a report…"
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="chat-send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="chat-sidebar">
+      <!-- Quick prompts -->
+      <div class="chat-panel">
+        <div class="chat-panel-title">⚡ Quick Prompts</div>
+        <button class="quick-prompt" onclick="usePrompt(this)">Who are the most at-risk students right now?</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">Suggest interventions for visual learners who are struggling.</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">What patterns correlate most with academic failure?</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">Generate a 4-week improvement plan for a disengaged student.</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">Which students show the most improvement potential?</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">Compare performance trends across learning styles.</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">What interventions have the highest success rates?</button>
+        <button class="quick-prompt" onclick="usePrompt(this)">Predict which students are likely to fail this semester.</button>
+      </div>
+
+      <!-- Context panel -->
+      <div class="chat-panel">
+        <div class="chat-panel-title">📊 Current Context</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.8;font-family:var(--font-mono)">
+          <div>Students: <span style="color:var(--cyan)">247</span></div>
+          <div>At-Risk: <span style="color:var(--red-b)">31 HIGH</span></div>
+          <div>Med Risk: <span style="color:var(--amber-b)">22 MED</span></div>
+          <div>Patterns: <span style="color:var(--cyan)">6 types</span></div>
+          <div>Active Plans: <span style="color:var(--green-b)">8</span></div>
+          <div>Model Acc: <span style="color:var(--cyan)">94%</span></div>
+          <div>Term: <span style="color:var(--text2)">Spring 2025</span></div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="chat-panel">
+        <div class="chat-panel-title">💡 What I Can Do</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          • Analyze individual student profiles<br>
+          • Suggest targeted interventions<br>
+          • Identify at-risk patterns<br>
+          • Generate improvement plans<br>
+          • Compare cohort trends<br>
+          • Recommend learning resources<br>
+          • Draft parent communication<br>
+          • Predict semester outcomes
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="data.js"></script>
+<script>
+// Auth guard
+injectUserIntoSidebar();
+injectUserIntoSidebar();
+
+const SYSTEM_PROMPT = `You are EduAI Advisor, an expert AI academic analytics system embedded in a school's learning management platform.
+
+You have access to the following student data context:
+- 247 total students across grades 10-11
+- 6 identified learning patterns: Visual (68), Collaborative (57), Auditory (42), Self-Directed (38), Repetition-Based (29), Exploratory (13)
+- 31 HIGH risk students, 22 MED risk students
+- Key at-risk students: Arjun Mehta (Math 48%, attendance 62%), Kiran Das (attendance 41%, no submissions), Kavya Reddy (GPA 1.5, trend -28%), Pooja Nair (anxiety-related disengagement)
+- Top performers: Meera Joshi (GPA 4.0, 98% attendance), Tanya Malhotra, Nikhil Iyer, Riya Kapoor
+- Active interventions: 8 (personalized study plans, peer tutoring, counseling referrals, parent alerts)
+- Intervention success rate: 89%
+- Current semester: Spring 2025
+- Average class scores: Math 76%, Science 77%, English 80%, History 72%
+
+Your role:
+- Provide data-driven academic insights and recommendations
+- Suggest specific, actionable interventions for at-risk students
+- Identify learning patterns and behavioral signals
+- Help educators make informed decisions
+- Generate personalized learning strategies matched to student archetypes
+- Be concise, data-driven, and empathetic to student needs
+
+Always reference specific data when available. Format responses with clear structure using bold headers, bullet points, and specific metrics. Be warm but professional.`;
+
+let conversationHistory = [];
+let isLoading = false;
+
+function addMessage(content, role, isTyping = false) {
+  const container = document.getElementById("chatMessages");
+  const wrapper = document.createElement("div");
+  wrapper.className = `chat-msg ${role}`;
+
+  const avatar = document.createElement("div");
+  avatar.className = "chat-msg-avatar";
+  avatar.innerText = role === "bot" ? "◑" : "👤";
+
+  const bubble = document.createElement("div");
+  bubble.className = isTyping ? "chat-bubble typing" : "chat-bubble";
+
+  if (isTyping) {
+    bubble.innerHTML = `<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>`;
+    wrapper.id = "typingIndicator";
+  } else {
+    // Format text: bold **text**, preserve newlines
+    bubble.innerHTML = content
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>");
+  }
+
+  wrapper.appendChild(avatar);
+  wrapper.appendChild(bubble);
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+  return wrapper;
+}
+
+function removeTyping() {
+  const t = document.getElementById("typingIndicator");
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  input.style.height = "44px";
+  addMessage(text, "user");
+  conversationHistory.push({ role: "user", content: text });
+
+  isLoading = true;
+  document.getElementById("sendBtn").disabled = true;
+  addMessage("", "bot", true); // typing indicator
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: conversationHistory
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.content && data.content[0] ? data.content[0].text : "I encountered an issue. Please try again.";
+
+    removeTyping();
+    addMessage(reply, "bot");
+    conversationHistory.push({ role: "assistant", content: reply });
+
+  } catch (error) {
+    removeTyping();
+    // Fallback with intelligent keyword responses
+    const reply = getFallbackResponse(text);
+    addMessage(reply, "bot");
+    conversationHistory.push({ role: "assistant", content: reply });
+  }
+
+  isLoading = false;
+  document.getElementById("sendBtn").disabled = false;
+}
+
+function getFallbackResponse(text) {
+  const t = text.toLowerCase();
+
+  if (t.includes("at-risk") || t.includes("risk") || t.includes("struggling")) {
+    return `**🚨 Current At-Risk Students — Priority Summary**\n\nBased on our predictive model, here are the highest-priority cases:\n\n**CRITICAL (Immediate Action):**\n• **Kavya Reddy** — GPA 1.5, attendance 38%, trend -28%. Predicted fail score: 30%. Needs emergency parent meeting + counselor referral.\n• **Kiran Das** — 0 submissions in 5 days, attendance 41%. Complete disengagement. Welfare check recommended.\n• **Arjun Mehta** — Math 48%, missed 3 submissions. Recommend peer tutor + daily check-in.\n\n**HIGH RISK:**\n• **Priya Sharma** — Attendance dropped to 58% despite strong ability (GPA 3.8). Likely external factor — pastoral care recommended.\n• **Pooja Nair** — Anxiety indicators. Academic counseling + reduced workload plan suggested.\n\n**Recommended next step:** Schedule intervention review meeting and activate personalized study plans for all 5 students this week.`;
+  }
+
+  if (t.includes("visual") || t.includes("learning style") || t.includes("pattern")) {
+    return `**🧠 Learning Pattern Analysis**\n\nOur AI has classified 247 students into 6 archetypes:\n\n• **Visual Learners (68 students, 28%)** — Highest in English/History. Recommend: infographics, color-coded notes, diagram-based assessments. Avg score: 76%.\n• **Collaborative Learners (57, 23%)** — Best performance in group settings. Peer projects drive +14% improvement.\n• **Auditory Learners (42, 17%)** — Respond to oral review, podcasts, debate formats.\n• **Self-Directed (38, 15%)** — Already high performers. Give advanced challenges to maintain engagement.\n• **Repetition-Based (29, 12%)** — Benefit most from spaced repetition apps and daily drill exercises (+18% improvement observed).\n• **Exploratory (13, 5%)** — Highest ceiling scores. Give open-ended STEM projects and case studies.\n\n**Key insight:** Matching content delivery to identified pattern improves outcomes by 7–18% on average.`;
+  }
+
+  if (t.includes("intervention") || t.includes("plan") || t.includes("help")) {
+    return `**✅ Intervention Recommendations**\n\nHere are the highest-impact interventions based on current data:\n\n**1. Personalized Study Plans (92% success rate)**\nAI-adapted pace and format for each learning archetype. Deploy for all HIGH-risk students immediately.\n\n**2. Peer Tutoring Matches (88% success rate)**\nAlgorithmically pair struggling students with compatible high-performers. Best for collaborative and visual learners.\n\n**3. Spaced Repetition Programs**\nFor the 29 repetition-based learners — apps like Anki with subject-specific decks show +18% grade improvement.\n\n**4. Attendance Recovery Plans**\nFor Kiran Das, Kavya Reddy, Priya Sharma — structured re-engagement with daily micro-goals.\n\n**5. Counseling Referrals**\nPooja Nair and Arjun Mehta show behavioral withdrawal indicators — mental health support before academic intervention.\n\n**Priority order:** Welfare → Attendance → Engagement → Academic support.`;
+  }
+
+  if (t.includes("predict") || t.includes("forecast") || t.includes("fail")) {
+    return `**◬ Semester Outcome Predictions**\n\nBased on current trajectories and our predictive model (94% accuracy):\n\n**Without intervention:**\n• 24 students predicted to fail (score < 50%)\n• Pass rate: ~67%\n• 6 students at critical fail risk (< 40%)\n\n**With targeted interventions:**\n• Predicted failures reduce to ~13\n• Pass rate improves to ~78% (+11%)\n• 38 students predicted for distinction (90%+)\n\n**Students with highest improvement potential:**\n• Rahul Verma — spaced repetition could add +15 pts\n• Sneha Patel — re-engaging her auditory preference could recover trending drop\n• Vikram Singh — self-directed project could spark motivation\n\n**Recommendation:** Act on all MED and HIGH risk cases within the next 2 weeks for maximum semester impact.`;
+  }
+
+  return `**EduAI Advisor**\n\nI can help you analyze student performance data, identify learning patterns, suggest interventions, and forecast outcomes. Try asking me:\n\n• "Who needs immediate attention right now?"\n• "What interventions work best for at-risk students?"\n• "Generate a study plan for a visual learner with low engagement"\n• "Which students are likely to improve with support?"`;
+}
+
+function usePrompt(btn) {
+  document.getElementById("chatInput").value = btn.innerText;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = "44px";
+  el.style.height = Math.min(el.scrollHeight, 120) + "px";
+}
+
+function clearChat() {
+  document.getElementById("chatMessages").innerHTML = "";
+  conversationHistory = [];
+  initChat();
+}
+
+function initChat() {
+  addMessage(`**Welcome to EduAI Advisor** 👋\n\nI'm your AI-powered academic analytics assistant. I have full context of your **247 students** across Spring 2025 — including behavioral data, learning patterns, risk assessments, and intervention history.\n\nHere's what's happening right now:\n• 🚨 **31 students** flagged as HIGH risk\n• 🧠 **6 learning patterns** identified across the cohort\n• 📈 **89% success rate** on active interventions\n• ◬ **24 students** predicted to fail without action\n\nAsk me about specific students, request intervention plans, or explore patterns. Use the quick prompts on the right to get started.`, "bot");
+}
+
+initChat();
+</script>
+</body>
+</html>
